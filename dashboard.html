@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Event Organizer</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #212529;
+        }
+        nav {
+            background-color: #343a40;
+            padding: 1rem;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        nav .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        nav .navbar-links a {
+            margin-left: 1rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        nav .navbar-links a:hover {
+            color: #ffc107;
+        }
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dashboard-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .dashboard-title h1 {
+            font-size: 2.5rem;
+            color: #343a40;
+        }
+        .dashboard-title p {
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+        .section-title {
+            margin-top: 2rem;
+            font-size: 1.8rem;
+            color: #343a40;
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .event-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background-color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .event-table th, .event-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .event-table th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+        .event-table tr:last-child td {
+            border-bottom: none;
+        }
+        .event-table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .form-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .form-section form {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-section input, .form-section label, .form-section button {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .form-section input {
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .form-section button {
+            padding: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 1rem;
+            background-color: #343a40;
+            color: white;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Section -->
+    <nav>
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">Event Organizer</a>
+            <div class="navbar-links">
+                <a href="/dashboard/{{ user_id }}">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Section -->
+    <div class="container">
+        <div class="dashboard-title">
+            <h1>Your Event Dashboard</h1>
+            <p>Organize and manage events effortlessly.</p>
+        </div>
+
+        <!-- Favorite Events Section -->
+        <div class="favorite-events-section">
+            <h3 class="section-title">Favorite Events</h3>
+            <table class="event-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    {% if event[4] == 1 %}
+                    <tr>
+                        <td>{{ event[1] }}</td>
+                        <td>{{ event[2] }}</td>
+                        <td>{{ event[3] }}</td>
+                        <td>
+                            <form method="POST" action="/remove_favorite/{{ event[0] }}/{{ user_id }}">
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- All Events Section -->
+        <div class="event-table">
+            <h3 class="section-title">All Events</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Favorite</th>
+                        <th>Actions</th>
+                        <th>Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>{{ event[1] }}</td>
+                        <td>{{ event[2] }}</td>
+                        <td>{{ event[3] }}</td>
+                        <td>
+                            {% if event[4] == 1 %}
+                            <form method="POST" action="/remove_favorite/{{ event[0] }}/{{ user_id }}">
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                            {% else %}
+                            <form method="POST" action="/favorite_event/{{ event[0] }}/{{ user_id }}">
+                                <button type="submit" class="btn btn-success">Add</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if event[5] == user_id %}
+                            <form method="POST" action="/delete_event/{{ event[0] }}/{{ user_id }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/view_event/{{ event[0] }}" class="btn btn-primary" target="_blank">Share</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add Event Section -->
+        <div class="form-section">
+            <h3 class="section-title">Add New Event</h3>
+            <form method="POST" action="/add_event/{{ user_id }}">
+                <label for="name">Event Name</label>
+                <input type="text" name="name" id="name" placeholder="Enter event name" required>
+
+                <label for="location">Event Location</label>
+                <input type="text" name="location" id="location" placeholder="Enter event location" required>
+
+                <label for="date">Event Date</label>
+                <input type="date" name="date" id="date" required>
+
+                <div style="text-align: left;">
+                    <input type="checkbox" name="is_public" id="is_public">
+                    <label for="is_public">Public Event</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Event</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Event Organizer. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
