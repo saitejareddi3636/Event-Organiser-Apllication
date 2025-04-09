@@ -1,0 +1,23 @@
+@startuml
+package "Event Organizer App" {
+[Frontend]
+[LoginPage] 
+[EventManager]
+[EventQueue]
+[UserDatabase]
+[NotificationService]
+[FavoritesManager]  
+
+[Frontend] --> [LoginPage] : user login
+[LoginPage] --> [EventManager] : authenticate user
+[Frontend] --> [EventManager] : create/view events
+[EventManager] --> [EventQueue] : manage event queue
+[EventManager] --> [UserDatabase] : store/retrieve user info
+[EventManager] --> [NotificationService] : send notifications
+[EventQueue] --> [UserDatabase] : log event details
+[Frontend] --> [FavoritesManager] : manage favorites
+[FavoritesManager] --> [UserDatabase] : store/retrieve favorite events
+[EventManager] --> [NotificationService] : set email notifications
+[EventManager] --> [EventQueue] : delete event
+}
+@enduml
